@@ -1,4 +1,7 @@
 import styled from "@emotion/styled";
+import {useState} from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 
 type InputWay = {
   'typing': 0,
@@ -12,15 +15,20 @@ interface InputValue {
 
 interface InputProps {
   value: InputValue,
+  label: string,
+  required?: boolean,
   inputWay: keyof InputWay,
-  icon: React.ReactNode,
-
+  icon?: IconDefinition,
 }
 
-const Input: React.FC<InputProps> = ({value, inputWay}) => {
+const Input: React.FC<InputProps> = ({value, inputWay, required, icon, label}) => {
+  const [isFocusOn, setFocusOn] = useState<boolean>(false);
   return (
-      <InputBoxStyle isFocusOn>
-
+      <InputBoxStyle isFocusOn={isFocusOn}>
+        <input type="text" value={value.display}
+               onFocus={() => setFocusOn(true)}
+               onBlur={() => setFocusOn(false)}/>
+        {icon && <FontAwesomeIcon icon={icon  } />}
       </InputBoxStyle>
   )
 }
