@@ -7,8 +7,8 @@ import SignupPage from "./pages/SignupPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 
 const router = createBrowserRouter([
-  {path: '/', element: <HomePage/>},
-  {path: '/login', element: <LoginPage/>},
+  {path: '/main', element: <HomePage/>},
+  {path: '/', element: <LoginPage/>},
   {path: '/signup', element: <SignupPage/>},
 ]);
 
