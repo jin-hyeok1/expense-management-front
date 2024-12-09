@@ -1,20 +1,13 @@
-import AppLayout from "../component/AppLayout.tsx";
-import MultiDisplay from "../component/MultiDisplay.tsx";
+import {DefaultFrame} from "../component/DefaultFrame.tsx";
+import ContentBox from "../component/ContentBox.tsx";
 
 const HomePage = () => {
-  console.log('hello world')
   return (
-      <AppLayout>
-        <MultiDisplay direction={'row'}>
-          <div
-              style={{width: '100%', alignItems: 'center', display: 'flex'}}
-          >
-            <img src='/logo.png' alt={'logo'}/>
-          </div>
-          <div style={{width: '100%'}}>하이</div>
-        </MultiDisplay>
-      </AppLayout>
+      <DefaultFrame>
+        <ContentBox title={'--- 님의 경비 등록 현황'}>
+          <div></div>
+        </ContentBox>
+      </DefaultFrame>
   )
 }
-
 export default HomePage

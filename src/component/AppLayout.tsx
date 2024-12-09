@@ -30,10 +30,12 @@ const App = styled.div`
 `;
 
 const AppFrame = styled.div`
-    width: 1000px;
-    height: 800px;
-    box-sizing: border-box;
-    border: 1px solid black;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: white;
+  width: 1000px;
+  height: 800px;
+  box-sizing: content-box;
+  border: 1px solid black;
+  padding: 0;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  overflow: hidden;
 `

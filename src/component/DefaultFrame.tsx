@@ -1,0 +1,46 @@
+import AppLayout from "./AppLayout.tsx";
+import {
+  Header,
+  MainContainer,
+  MainFrame,
+  MainFrameContainer,
+  SideMenuContainer,
+  SideTop,
+  SideTopTitle
+} from "./frame.main.css.ts";
+import {useState} from "react";
+import FontIcon from "./button/FontIcon.tsx";
+import {faArrowRightFromBracket, faBars} from "@fortawesome/free-solid-svg-icons";
+import {MenuList} from "./MenuList.tsx";
+
+export const DefaultFrame = ({children}: { children: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  return (
+      <AppLayout>
+        <MainContainer>
+          <SideMenuContainer isOpen={isOpen}>
+            <SideTop>
+              <SideTopTitle>Menu</SideTopTitle>
+              <FontIcon onClick={() => setIsOpen(prev => !prev)} icon={faBars}/>
+            </SideTop>
+            <MenuList />
+          </SideMenuContainer>
+          <MainFrameContainer>
+            <Header>
+              <FontIcon onClick={() => setIsOpen(prev => !prev)} icon={faBars}
+                        style={{display: isOpen ? 'none' : 'inline-block'}}/>
+              <FontIcon
+                  onClick={() => console.log('logout!')}
+                  icon={faArrowRightFromBracket}
+                  style={{color: 'red'}}
+              />
+            </Header>
+            <MainFrame>
+              {children}
+            </MainFrame>
+          </MainFrameContainer>
+        </MainContainer>
+      </AppLayout>
+  )
+}
+

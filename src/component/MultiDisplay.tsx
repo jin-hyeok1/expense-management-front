@@ -7,9 +7,16 @@ interface MultiDisplayProps {
 }
 
 const MultiDisplay: React.FC<MultiDisplayProps> = ({children, direction}) => {
+  const modifiedChildren = React.Children.map(children, (child) => {
+    return (
+        <ChildContainer>
+          {React.isValidElement(child) ? React.cloneElement(child) : child}
+        </ChildContainer>
+    )
+  })
   return (
       <Display direction={direction}>
-        {children}
+        {modifiedChildren}
       </Display>
   )
 }
@@ -22,3 +29,9 @@ const Display = styled.div<{ direction: string }>`
   height: 100%;
   width: 100%;
 `;
+
+const ChildContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+`

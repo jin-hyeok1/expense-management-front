@@ -1,14 +1,15 @@
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import './index.css'
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 
 const router = createBrowserRouter([
-  {path: '/main', element: <HomePage/>},
-  {path: '/', element: <LoginPage/>},
+  {path: '/', element: <Navigate to={'/expenses'} />},
+  {path: '/expenses', element: <HomePage/>},
+  {path: '/login', element: <LoginPage/>},
   {path: '/signup', element: <SignupPage/>},
 ]);
 

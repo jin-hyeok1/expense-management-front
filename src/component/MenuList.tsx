@@ -1,0 +1,45 @@
+import {FirstMenuContainer, MenuContainer, SecondMenuContainer} from "./frame.main.css.ts";
+import {Menu, MenuCard} from "./MenuCard.tsx";
+import {useState} from "react";
+
+export const MenuList: React.FC = () => {
+  const menus: Menu[] = [
+    {
+      name: '경비',
+      childMenu: [{name: '경비 등록 현황', url: '/expenses'}, {name: '경비 등록', url: '/expense/new'}]
+    },
+    {
+      name: '관리자',
+      childMenu: [{name: '회원 관리', url: '/members'}, {name: '계정값 관리', url: '/enums'}]
+    }
+  ]
+
+  const [firstMenuIdx, setFirstMenuIdx] = useState<number>(0);
+  const [secondMenuIdx, setSecondMenuIdx] = useState<number>(0);
+  const onClickFirstMenu = (idx: number) => {
+    setFirstMenuIdx(idx);
+    setSecondMenuIdx(0);
+  }
+  return (
+      <MenuContainer>
+        <FirstMenuContainer>
+          {menus.map((menu, idx) => (
+              <MenuCard
+                  key={idx}
+                  name={menu.name} selected={idx === firstMenuIdx}
+                  onClick={() => onClickFirstMenu(idx)}
+              />
+          ))}
+        </FirstMenuContainer>
+        <SecondMenuContainer>
+          {menus[firstMenuIdx]?.childMenu?.map((menu, idx) => (
+              <MenuCard
+                  key={idx}
+                  name={menu.name} url={menu.url} selected={idx === secondMenuIdx}
+                  onClick={() => setSecondMenuIdx(idx)}
+              />
+          ))}
+        </SecondMenuContainer>
+      </MenuContainer>
+  )
+}
