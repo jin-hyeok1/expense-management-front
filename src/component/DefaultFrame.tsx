@@ -12,9 +12,11 @@ import {useState} from "react";
 import FontIcon from "./button/FontIcon.tsx";
 import {faArrowRightFromBracket, faBars} from "@fortawesome/free-solid-svg-icons";
 import {MenuList} from "./MenuList.tsx";
+import {useNavigate} from "react-router-dom";
 
 export const DefaultFrame = ({children}: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const navigate = useNavigate();
   return (
       <AppLayout>
         <MainContainer>
@@ -30,7 +32,7 @@ export const DefaultFrame = ({children}: { children: React.ReactNode }) => {
               <FontIcon onClick={() => setIsOpen(prev => !prev)} icon={faBars}
                         style={{display: isOpen ? 'none' : 'inline-block'}}/>
               <FontIcon
-                  onClick={() => console.log('logout!')}
+                  onClick={() => navigate('/login')}
                   icon={faArrowRightFromBracket}
                   style={{color: 'red'}}
               />

@@ -4,11 +4,11 @@ import './index.css'
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
-import HomePage from "./pages/HomePage.tsx";
+import ExpenseListPage from "./pages/ExpenseListPage.tsx";
 
 const router = createBrowserRouter([
   {path: '/', element: <Navigate to={'/expenses'} />},
-  {path: '/expenses', element: <HomePage/>},
+  {path: '/expenses', element: <ExpenseListPage/>},
   {path: '/login', element: <LoginPage/>},
   {path: '/signup', element: <SignupPage/>},
 ]);

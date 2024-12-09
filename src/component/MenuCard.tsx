@@ -39,15 +39,15 @@ const MenuCardStyle = styled.div<{ selected: boolean }>`
   align-items: center;
   justify-content: center;
   display: flex;
-  background-color: ${(props) => props.selected ? '#2980b9' : '#3498db'};
-  color: white;
+  background-color: ${(props) => props.selected ? '#B9B4B4' : '#FFFFFF'};
+  color: black;
   width: 100%;
   height: 100px;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: ${(props) => props.selected ? '0 8px 16px rgba(0, 0, 0, 0.3' : '0 4px 8px rgba(0, 0, 0, 0.2%)'};
   &:hover {
-    background-color: #2980b9;
+    background-color: #B9B4B4;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   }
 `

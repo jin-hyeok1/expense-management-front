@@ -1,7 +1,7 @@
 import {DefaultFrame} from "../component/DefaultFrame.tsx";
 import ContentBox from "../component/ContentBox.tsx";
 
-const HomePage = () => {
+const ExpenseListPage = () => {
   return (
       <DefaultFrame>
         <ContentBox title={'--- 님의 경비 등록 현황'}>
@@ -10,4 +10,4 @@ const HomePage = () => {
       </DefaultFrame>
   )
 }
-export default HomePage
+export default ExpenseListPage
