@@ -12,7 +12,7 @@ export interface Expense {
 
 export interface ExpenseItem {
     expenseDate: string,
-    accountSubject: string,
+    group: string,
     purpose: string,
     amount: number,
     description?: string,
@@ -34,4 +34,10 @@ export interface LoginRequest {
 
 export interface SimpleMessage {
     message: string,
+}
+
+export interface Group {
+    index: number,
+    name: string,
+    createAt: Date
 }

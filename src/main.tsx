@@ -5,16 +5,18 @@ import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
 import ExpenseListPage from "./pages/ExpenseListPage.tsx";
+import ExpenseCreatePage from "./pages/ExpenseCreatePage.tsx";
 
 const router = createBrowserRouter([
-  {path: '/', element: <Navigate to={'/expenses'} />},
-  {path: '/expenses', element: <ExpenseListPage/>},
-  {path: '/login', element: <LoginPage/>},
-  {path: '/signup', element: <SignupPage/>},
+    {path: '/', element: <Navigate to={'/expenses'}/>},
+    {path: '/expenses', element: <ExpenseListPage/>},
+    {path: '/expense/new', element: <ExpenseCreatePage/>},
+    {path: '/login', element: <LoginPage/>},
+    {path: '/signup', element: <SignupPage/>},
 ]);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <RouterProvider router={router}/>
+        <RouterProvider router={router}/>
     </StrictMode>,
 )
