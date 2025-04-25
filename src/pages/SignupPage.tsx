@@ -34,7 +34,7 @@ const SignupForm = () => {
     }, 1000);
   }
   return (
-      <ContentBox title={'회원가입'}>
+      <ContentBox title={'회원가입'} flexDirection={'column'}>
         <InputString required label={'이름'} value={name} onChange={setName}/>
         <div style={{display: "flex", flexDirection: 'row'}}>
           <InputString required label={'이메일'} value={email} onChange={setEmail}/>

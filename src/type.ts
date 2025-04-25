@@ -22,9 +22,10 @@ export interface ExpenseItem {
 }
 
 export interface ExpenseItemImage {
-    path: string,
-    name: string,
-    file: Blob
+    path?: string,
+    name?: string,
+    fileList: File[]
+    file: File
 }
 
 export interface LoginRequest {
@@ -36,8 +37,7 @@ export interface SimpleMessage {
     message: string,
 }
 
-export interface Group {
-    index: number,
+export interface Subject {
     name: string,
     createAt: Date
 }

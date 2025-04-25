@@ -7,6 +7,7 @@ import InputString from "../component/input/InputString.tsx";
 import InputStringHidden from "../component/input/InputStringHidden.tsx";
 import {ButtonContainer} from "../component/button/ButtonContainer.tsx";
 import {useNavigate} from "react-router-dom";
+import {login} from "../util/api.ts";
 
 const LoginForm = () => {
   const navigate = useNavigate()
@@ -18,14 +19,23 @@ const LoginForm = () => {
   const onChangePassword = (value: string) => {
     setPassword(value)
   }
+
+  const onClickLogin = async () => {
+      const response = await login({email, password});
+      console.log(response)
+      if (response.request?.status === 200) {
+          navigate('/expenses')
+      }
+  }
   return (
-      <ContentBox padding='30px' title={'로그인'}>
+      <ContentBox padding='30px' title={'로그인'} flexDirection={'column'}>
+
         <InputString label={'email'} required value={email} onChange={onChangeEmail}/>
         <InputStringHidden label={'password'} required value={password}
                            onChange={onChangePassword}/>
         <ButtonContainer>
           <Button
-              callback={() => console.log('email: ', email, '\npassword: ', password)}
+              callback={onClickLogin}
               kind={'active'}>
             로그인
           </Button>

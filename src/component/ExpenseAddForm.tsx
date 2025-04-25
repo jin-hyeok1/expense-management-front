@@ -1,43 +1,59 @@
-import {Button, DatePicker, Form, Input, InputNumber, Select, Upload} from "antd";
+import {Button, DatePicker, Flex, Form, FormInstance, Input, InputNumber, Select, Upload} from "antd";
 import {useExpenseAddForm} from "../hooks/useExpenseAddForm.ts";
-import { InboxOutlined } from '@ant-design/icons';
+import {InboxOutlined} from '@ant-design/icons';
 
 interface ExpenseAddFormProps {
     onFinish: (values: any) => Promise<void>
+    onCancel: () => void,
+    form: FormInstance
 }
 
-export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish}) => {
-    const {form, groups} = useExpenseAddForm()
+export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish, onCancel, form}) => {
+    const {subjects} = useExpenseAddForm()
+    const widthFullStyle = {width: '100%'};
     return (
-        <Form form={form} onFinish={values => onFinish({...values})} layout="vertical">
+        <Form
+            form={form}
+            onFinish={values => onFinish({...values})}
+            layout="vertical">
             <Form.Item
                 label="지출월일"
                 name="expenseDate"
                 rules={[{required: true, message: "지출월일을 입력해주세요"}]}>
-                <DatePicker format="YYYY-MM-DD"/>
+                <DatePicker format="YYYY-MM-DD" style={widthFullStyle}/>
             </Form.Item>
             <Form.Item
                 label="계정과목"
-                name="group"
+                name="subject"
                 rules={[{required: true, message: "계정과목을 선택해주세요"}]}>
-                <Select placeholder="계정과목 선택">
-                    {groups?.map(group => (
-                        <Select.Option key={group.index} value={group.name}>
+                <Select placeholder="계정과목 선택" style={widthFullStyle}>
+                    {subjects?.map((group, idx) => (
+                        <Select.Option key={idx} value={group.name}>
                             {group.name}
                         </Select.Option>
                     ))}
                 </Select>
             </Form.Item>
             <Form.Item label="사용목적" name="purpose" rules={[{required: true, message: "사용목적을 입력해주세요"}]}>
-                <Input.TextArea placeholder="사용목적"/>
+                <Input.TextArea placeholder="사용목적" style={widthFullStyle}/>
             </Form.Item>
             <Form.Item label="사용금액" name="amount" rules={[{required: true, message: "사용 금액을 입력해주세요"}]}>
                 <InputNumber
+                    style={widthFullStyle}
                     placeholder="사용금액"
                     formatter={(value) => value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''}
                     parser={(value) => value ? value.replace(/,/g, '') : ''}/>
             </Form.Item>
-            <Form.Item label="이미지 첨부" name="image">
+            <Form.Item label="비고(참석자)" name="note">
+                <Input.TextArea placeholder="비고" style={widthFullStyle} />
+            </Form.Item>
+            <Form.Item
+                label="이미지 첨부"
+                name="image"
+                valuePropName="fileList"
+                getValueFromEvent={e => Array.isArray(e) ? e : e?.fileList}
+                rules={[{required: true, message: "영수증을 첨부해주세요"}]}
+            >
                 <Upload.Dragger
                     name="file"
                     beforeUpload={() => false}
@@ -51,9 +67,14 @@ export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish}) => {
                 </Upload.Dragger>
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit">
-                    추가
-                </Button>
+                <Flex justify='space-between'>
+                    <Button type="default" onClick={onCancel} style={{width: '100%'}}>
+                        취소
+                    </Button>
+                    <Button type="primary" htmlType="submit" style={{width: '100%'}}>
+                        추가
+                    </Button>
+                </Flex>
             </Form.Item>
         </Form>
     )

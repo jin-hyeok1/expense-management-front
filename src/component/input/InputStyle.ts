@@ -20,7 +20,7 @@ const InputBoxStyle = styled.div<InputBoxStyleProps>`
 `
 
 const InputContainerStyle = styled.div`
-  width: 100%;
+  width: calc(100% - 2px);
   height: 80px;
   display: flex;
   flex-direction: column;

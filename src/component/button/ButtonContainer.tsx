@@ -13,5 +13,5 @@ const ButtonContainerStyle = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 10px;
-  width: 100%;
+  width: calc(100% - 2px);
 `
