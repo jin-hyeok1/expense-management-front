@@ -12,7 +12,7 @@ export const MenuList: React.FC = () => {
         },
         {
             name: '관리자',
-            childMenu: [{name: '회원 관리', url: '/members'}, {name: '계정값 관리', url: '/enums'}]
+            childMenu: [{name: '회원 관리', url: '/admin/members'}, {name: '계정값 관리', url: '/admin/subjects'}]
         }
     ]
 

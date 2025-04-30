@@ -1,9 +1,9 @@
 import {Button, DatePicker, Divider, Flex, Form, FormInstance, Input, Typography} from "antd";
-import {ExpenseItem} from "../type.ts";
+import {Expense} from "../type.ts";
 
 interface ExpenseRegisterFormProps {
     onFinish: (values: any) => Promise<void>,
-    expenseList: ExpenseItem[]
+    expenseList: Expense[]
     onRemoveExpense: (index: number) => void
     onClickExpenseAdd: () => void
     form: FormInstance
@@ -45,7 +45,7 @@ export const ExpenseRegisterForm: React.FC<ExpenseRegisterFormProps> =
                     <Form.Item key={index} label={`지출내역-${index + 1}`} style={{width: '70%'}}>
                         <Flex justify={'space-between'}>
                             <Input disabled={true}
-                                   value={`${formatDate(expense.expenseDate)}, ${expense.purpose}에 ${expense.amount.toLocaleString()}원을 사용했어요.`}/>
+                                   value={`${formatDate(expense.expenseDate)}, ${expense.content}에 ${expense.amount.toLocaleString()}원을 사용했어요.`}/>
                             <Button type="link" danger onClick={() => onRemoveExpense(index)}>❌</Button>
                         </Flex>
                     </Form.Item>
@@ -53,9 +53,11 @@ export const ExpenseRegisterForm: React.FC<ExpenseRegisterFormProps> =
                 <Divider/>
                 <Typography.Text strong>총 사용 금액: {totalAmount.toLocaleString()} 원</Typography.Text>
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        등록
-                    </Button>
+                    <Flex justify={'flex-end'}>
+                        <Button type="primary" htmlType="submit">
+                            등록
+                        </Button>
+                    </Flex>
                 </Form.Item>
             </Form>
         )

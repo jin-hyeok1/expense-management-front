@@ -1,34 +1,28 @@
 import {createContext, useContext, useEffect, useState} from "react";
-import {getMe} from "../util/api.ts";
+import {getMe} from "../api.ts";
+import {User} from "../type.ts";
 import {useNavigate} from "react-router-dom";
 
-interface User {
-    name: string,
-    email: string,
-    role: string,
-}
 
 const UserContext = createContext<User | null>(null);
 
-// ✅ Provider
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        getMe().then(res => {
-            setUser(res.data);
-        });
+        getMe()
+            .then(res => setUser(res.data))
+            .catch(() => setUser(null))
+            .finally(() => setLoading(false));
     }, []);
+
+    if (loading) return <div>로딩 중...</div>; // 또는 스피너
 
     return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 };
 
 export const useUser = () => {
-    const ctx = useContext(UserContext);
-    const navigate = useNavigate();
-    console.log(ctx)
-    if (ctx === null) {
-        navigate('/login')
-    }
-    return ctx;
+    return useContext(UserContext);
 };

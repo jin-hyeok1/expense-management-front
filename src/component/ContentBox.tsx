@@ -2,48 +2,67 @@ import styled from "@emotion/styled";
 
 export interface ContentBoxPros {
     children: React.ReactNode,
-    popup?: React.ReactNode,
-    popupOpen?: boolean,
+    modal?: React.ReactNode,
+    modalOpen?: boolean,
+    onCloseModal?: () => void,
     title?: string
-    padding?: string,
     flexDirection?: string,
+    popupWidth?: string | number
 }
 
-const ContentBox: React.FC<ContentBoxPros> = ({
-                                                  children,
-                                                  popup,
-                                                  popupOpen,
-                                                  padding = '30px',
-                                                  title,
-                                                  flexDirection = 'row'
-                                              }) => {
-    return (
-        <ContentBoxContainer padding={padding}>
-            <Title>{title}</Title>
-            <InnerContentBoxContainer direction={flexDirection}>
-                {children}
-                {popupOpen && popup ? (<PopupBox>
-                    {popup}
-                </PopupBox>) : <></>}
-            </InnerContentBoxContainer>
-        </ContentBoxContainer>
-    )
-}
+const ContentBox: React.FC<ContentBoxPros> =
+    ({
+         children,
+         modal,
+         modalOpen,
+         title,
+         onCloseModal,
+         flexDirection = 'row',
+         popupWidth
+     }) => {
+        const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+            // 팝업 영역 클릭 시 오버레이 클릭으로 처리되지 않도록 중단
+            if (e.target === e.currentTarget && onCloseModal) {
+                onCloseModal();
+            }
+        };
+
+        return (
+            <ContentBoxContainer>
+                <Title>{title}</Title>
+                <InnerContentBoxContainer direction={flexDirection}>
+                    {children}
+                </InnerContentBoxContainer>
+                {modalOpen && modal && (
+                    <PopupOverlay onClick={handleOverlayClick}>
+                        <PopupBox style={{width: popupWidth}}>{modal}</PopupBox>
+                    </PopupOverlay>
+                )}
+            </ContentBoxContainer>
+        )
+    }
+
+const PopupOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+`;
 
 const PopupBox = styled.div`
-    width: 45%;
-    padding: 10px;
-    height: 100%;
-    border-radius: 10px;
-    box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.4);
-    border: 1px black solid;
-    margin-left: 10px;
-    overflow: auto;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-`
+    background: white;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+`;
 
 const InnerContentBoxContainer = styled.div<{ direction: string }>`
     width: 100%;
@@ -53,10 +72,10 @@ const InnerContentBoxContainer = styled.div<{ direction: string }>`
     overflow: auto;
 `
 
-const ContentBoxContainer = styled.div<{ padding: string }>`
+const ContentBoxContainer = styled.div`
     width: 100%;
     height: 100%;
-    padding: ${({padding}) => padding};
+    padding: 30px
 `
 
 const Title = styled.div`

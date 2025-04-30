@@ -4,23 +4,28 @@ import './index.css'
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
-import ExpenseListPage from "./pages/ExpenseListPage.tsx";
-import ExpenseCreatePage from "./pages/ExpenseCreatePage.tsx";
+import ExpenseListPage from "./pages/expenselist/ExpenseListPage.tsx";
+import ExpenseCreatePage from "./pages/expensecreate/ExpenseCreatePage.tsx";
 import {UserProvider} from "./hooks/UserContext.tsx";
-import {RequireAuth} from "./hooks/RequiredAuth.tsx";
+import RequireAuth from "./hooks/RequiredAuth.tsx";
+import SubjectManagePage from "./pages/subjectmanage/SubjectManagePage.tsx";
 
 const router = createBrowserRouter([
     {path: '/', element: <Navigate to={'/login'}/>},
-    {path: '/expenses', element: <RequireAuth><ExpenseListPage/></RequireAuth>},
-    {path: '/expense/new', element: <RequireAuth><ExpenseCreatePage/></RequireAuth>},
+    {
+        element: <UserProvider><RequireAuth /></UserProvider>,
+        children: [
+            { path: "/expenses", element: <ExpenseListPage /> },
+            { path: "/expense/new", element: <ExpenseCreatePage /> },
+            { path: "/admin/subjects", element: <SubjectManagePage />}
+        ]
+    },
     {path: '/login', element: <LoginPage/>},
     {path: '/signup', element: <SignupPage/>},
 ]);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <UserProvider>
             <RouterProvider router={router}/>
-        </UserProvider>
     </StrictMode>,
 )

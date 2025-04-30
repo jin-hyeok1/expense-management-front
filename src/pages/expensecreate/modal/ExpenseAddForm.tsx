@@ -1,5 +1,5 @@
 import {Button, DatePicker, Flex, Form, FormInstance, Input, InputNumber, Select, Upload} from "antd";
-import {useExpenseAddForm} from "../hooks/useExpenseAddForm.ts";
+import {useExpenseAddForm} from "../../../hooks/useExpenseAddForm.ts";
 import {InboxOutlined} from '@ant-design/icons';
 
 interface ExpenseAddFormProps {
@@ -34,7 +34,7 @@ export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish, onCance
                     ))}
                 </Select>
             </Form.Item>
-            <Form.Item label="사용목적" name="purpose" rules={[{required: true, message: "사용목적을 입력해주세요"}]}>
+            <Form.Item label="사용목적" name="content" rules={[{required: true, message: "사용목적을 입력해주세요"}]}>
                 <Input.TextArea placeholder="사용목적" style={widthFullStyle}/>
             </Form.Item>
             <Form.Item label="사용금액" name="amount" rules={[{required: true, message: "사용 금액을 입력해주세요"}]}>
@@ -44,8 +44,8 @@ export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish, onCance
                     formatter={(value) => value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''}
                     parser={(value) => value ? value.replace(/,/g, '') : ''}/>
             </Form.Item>
-            <Form.Item label="비고(참석자)" name="note">
-                <Input.TextArea placeholder="비고" style={widthFullStyle} />
+            <Form.Item label="비고(참석자/승인자)" name="note">
+                <Input.TextArea placeholder="비고(참석자/승인자)" style={widthFullStyle} />
             </Form.Item>
             <Form.Item
                 label="이미지 첨부"
