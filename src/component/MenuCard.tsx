@@ -39,6 +39,7 @@ const MenuCardStyle = styled.div<{ selected: boolean }>`
   align-items: center;
   justify-content: center;
   display: flex;
+  user-select: none;
   background-color: ${(props) => props.selected ? '#B9B4B4' : '#FFFFFF'};
   color: black;
   width: 100%;

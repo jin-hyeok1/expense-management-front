@@ -1,4 +1,4 @@
-import {Button, DatePicker, Divider, Flex, Form, FormInstance, Input, Typography} from "antd";
+import {Button, DatePicker, Flex, Form, FormInstance, Input, Typography} from "antd";
 import {Expense} from "../type.ts";
 
 interface ExpenseRegisterFormProps {
@@ -39,27 +39,30 @@ export const ExpenseRegisterForm: React.FC<ExpenseRegisterFormProps> =
                     >
                         <DatePicker picker="month" format="YYYY-MM"/>
                     </Form.Item>
-                    <Button type="primary" onClick={onClickExpenseAdd}>추가하기</Button>
+                    <Button type="primary" onClick={onClickExpenseAdd}>항목 추가하기</Button>
                 </Flex>
-                {expenseList.map((expense, index) => (
-                    <Form.Item key={index} label={`지출내역-${index + 1}`} style={{width: '70%'}}>
-                        <Flex justify={'space-between'}>
-                            <Input disabled={true}
-                                   value={`${formatDate(expense.expenseDate)}, ${expense.content}에 ${expense.amount.toLocaleString()}원을 사용했어요.`}/>
-                            <Button type="link" danger onClick={() => onRemoveExpense(index)}>❌</Button>
+                <div style={{maxHeight: 400, overflowY: 'auto', marginBottom: 16}}>
+                    {expenseList.map((expense, index) => (
+                        <Form.Item key={index} label={`지출내역-${index + 1}`} style={{width: '70%'}}>
+                            <Flex justify={'space-between'}>
+                                <Input disabled={true}
+                                       value={`${formatDate(expense.expenseDate)}, ${expense.content}에 ${expense.amount.toLocaleString()}원을 사용했어요.`}/>
+                                <Button type="link" danger onClick={() => onRemoveExpense(index)}>❌</Button>
+                            </Flex>
+                        </Form.Item>
+                    ))}
+                </div>
+                <div style={{borderTop: '1px solid #eee', paddingTop: 16}}>
+                    <Typography.Text strong>총 사용 금액: {totalAmount.toLocaleString()} 원</Typography.Text>
+                    <Form.Item>
+                        <Flex justify={'flex-end'}>
+                            <Button type="primary" htmlType="submit">
+                                등록
+                            </Button>
                         </Flex>
                     </Form.Item>
-                ))}
-                <Divider/>
-                <Typography.Text strong>총 사용 금액: {totalAmount.toLocaleString()} 원</Typography.Text>
-                <Form.Item>
-                    <Flex justify={'flex-end'}>
-                        <Button type="primary" htmlType="submit">
-                            등록
-                        </Button>
-                    </Flex>
-                </Form.Item>
+                </div>
             </Form>
-        )
+    )
     }
 

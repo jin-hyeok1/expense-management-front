@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Table, Flex} from "antd";
 import type {ColumnsType} from "antd/es/table";
 import type {ReactNode} from "react";
@@ -17,7 +17,9 @@ interface DataGridProps extends Pageable {
     headers: Header[];
     buttons?: ReactNode;
     rowKey?: string;
-    onSelect?: (record: any, index?: number) => void
+    onSelect?: (record: any, index?: number) => void,
+    selected: any,
+    onChangePage: (page: number) => void;
 }
 
 const DataGrid: React.FC<DataGridProps> =
@@ -30,7 +32,8 @@ const DataGrid: React.FC<DataGridProps> =
          currentPage,
          pageSize,
          onChangePage,
-         onSelect
+         onSelect,
+         selected,
      }) => {
         const columns: ColumnsType<any> = headers.map((header) => ({
             title: header.displayValue,
@@ -40,7 +43,6 @@ const DataGrid: React.FC<DataGridProps> =
             width: header.width
         }));
 
-        const [selectedRowKey, setSelectedRowKey] = useState<any>();
         return (
             <div style={{display: "flex", flexDirection: "column", gap: 12, width: '100%', height: '100%'}}>
                 {buttons && (
@@ -52,36 +54,32 @@ const DataGrid: React.FC<DataGridProps> =
                 )}
                 <ScrollContainer>
                     <StyledTable
+                        rowClassName={(_, index) =>
+                            index % 2 === 0 ? 'even-row' : 'odd-row'
+                        }
                         dataSource={data}
                         columns={columns}
                         id={'name'}
-                        pagination={
-                            onChangePage
-                                ? {
-                                    total: totalItems,
-                                    current: currentPage,
-                                    pageSize,
-                                    onChange: onChangePage,
-                                }
-                                : false
-                        }
-                        onRow={(record, rowIndex) => ({
+                        pagination={{
+                            total: totalItems,
+                            current: currentPage,
+                            pageSize,
+                            onChange: (page, _) => onChangePage(page)
+                        }}
+                        onRow={(record: any, rowIndex) => ({
                             onClick: () => {
-                                // @ts-ignore
-                                if (selectedRowKey === record[rowKey]) {
-                                    setSelectedRowKey(undefined)
-                                    if (onSelect) onSelect(undefined, -1)
-                                } else {
-                                    // @ts-ignore
-                                    setSelectedRowKey(record[rowKey]);
-                                    if (onSelect) onSelect(record, rowIndex)
+                                if (onSelect) {
+                                    if (selected && record[rowKey] === selected[rowKey]) {
+                                        onSelect(undefined, -1)
+                                    } else {
+                                        onSelect(record, rowIndex)
+                                    }
                                 }
                             }
                         })}
                         rowSelection={{
                             type: 'radio',
-                            selectedRowKeys: selectedRowKey ? [selectedRowKey] : [],
-                            onChange: (keys) => setSelectedRowKey(keys[0]),
+                            selectedRowKeys: selected ? [selected[rowKey]] : [],
                         }}
                         rowKey={rowKey}
                     />
@@ -98,30 +96,58 @@ const StyledTable = styled(Table)`
         font-weight: 600;
     }
 
-    .ant-table-row:nth-of-type(odd) {
+    .even-row {
+        background-color: #f0f0f0;
+    }
+
+    .odd-row {
         background-color: #fafafa;
     }
 
-    .ant-table-row:hover {
+    .ant-table-cell-row-hover {
         background-color: #e6f7ff;
         cursor: pointer;
     }
 
-    .ant-table-row-selected {
-        background-color: #bae7ff !important;
-    }
 `;
 
 const ScrollContainer = styled.div`
     overflow-x: auto;
     width: 100%;
     height: 100%;
+
+    .ant-table-tbody {
+        .ant-table-row.ant-table-row-selected {
+            .ant-table-cell {
+                background-color: #bae7ff;
+            }
+        }
+
+        .ant-table-row {
+            .ant-table-cell {
+                .ant-radio-wrapper {
+                    .ant-radio {
+                        display: none;
+                    }
+                }
+            }
+
+            .ant-table-cell-row-hover {
+                background-color: #e6f7ff;
+            }
+        }
+    }
+
     .ant-table-wrapper {
+        user-select: none;
         height: calc(100% - 50px);
+
         .ant-spin-nested-loading {
             height: 100%;
+
             .ant-spin-container {
                 height: 100%;
+
                 .ant-table {
                     height: 100%;
                 }

@@ -1,20 +1,24 @@
-import {Button, DatePicker, Flex, Form, FormInstance, Input, InputNumber, Select, Upload} from "antd";
+import {Button, DatePicker, Flex, Form, Input, InputNumber, Select, Upload} from "antd";
 import {useExpenseAddForm} from "../../../hooks/useExpenseAddForm.ts";
 import {InboxOutlined} from '@ant-design/icons';
+import {useForm} from "antd/es/form/Form";
 
 interface ExpenseAddFormProps {
-    onFinish: (values: any) => Promise<void>
+    onFinish: (values: any) => void
     onCancel: () => void,
-    form: FormInstance
 }
 
-export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish, onCancel, form}) => {
+export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish, onCancel}) => {
+    const [form] = useForm()
     const {subjects} = useExpenseAddForm()
     const widthFullStyle = {width: '100%'};
     return (
         <Form
             form={form}
-            onFinish={values => onFinish({...values})}
+            onFinish={values => {
+                onFinish({...values})
+                form.resetFields()
+            }}
             layout="vertical">
             <Form.Item
                 label="지출월일"
@@ -45,7 +49,7 @@ export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish, onCance
                     parser={(value) => value ? value.replace(/,/g, '') : ''}/>
             </Form.Item>
             <Form.Item label="비고(참석자/승인자)" name="note">
-                <Input.TextArea placeholder="비고(참석자/승인자)" style={widthFullStyle} />
+                <Input.TextArea placeholder="비고(참석자/승인자)" style={widthFullStyle}/>
             </Form.Item>
             <Form.Item
                 label="이미지 첨부"
@@ -68,7 +72,10 @@ export const ExpenseAddForm: React.FC<ExpenseAddFormProps> = ({onFinish, onCance
             </Form.Item>
             <Form.Item>
                 <Flex justify='space-between'>
-                    <Button type="default" onClick={onCancel} style={{width: '100%'}}>
+                    <Button type="default" onClick={() => {
+                        onCancel()
+                        form.resetFields()
+                    }} style={{width: '100%'}}>
                         취소
                     </Button>
                     <Button type="primary" htmlType="submit" style={{width: '100%'}}>

@@ -44,27 +44,28 @@ export const SideTop = styled.div`
 `
 
 export const SideTopTitle = styled.div`
-  width: calc(100% - 40px);
-  font-size: 20px;
-  height: 24px;
+    width: calc(100% - 40px);
+    user-select: none;
+    font-size: 20px;
+    height: 24px;
 `
 
 export const MenuContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
 `
 
 export const FirstMenuContainer = styled.div`
-  align-items: center;
-  justify-content: start;
-  display: flex;
-  flex: 0.4;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  border-right: 1px solid black;
+    align-items: center;
+    justify-content: start;
+    display: flex;
+    flex: 0.4;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid black;
 `
 
 export const SecondMenuContainer = styled.div`

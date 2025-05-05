@@ -1,7 +1,6 @@
 import {createContext, useContext, useEffect, useState} from "react";
-import {getMe} from "../api.ts";
 import {User} from "../type.ts";
-import {useNavigate} from "react-router-dom";
+import {getMe} from "../api/user.ts";
 
 
 const UserContext = createContext<User | null>(null);
@@ -9,7 +8,6 @@ const UserContext = createContext<User | null>(null);
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         getMe()

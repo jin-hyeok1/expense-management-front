@@ -24,6 +24,11 @@ export default tseslint.config(
                 {allowConstantExport: true},
             ],
             '@typescript-eslint/no-explicit-any': 0,
+            '@typescript-eslint/no-unused-vars': ['warn', {
+
+                argsIgnorePattern: '^_', // _로 시작하는 인자는 무시
+                varsIgnorePattern: '^_' // _로 시작하는 변수 무시
+            }],
         },
     },
 )

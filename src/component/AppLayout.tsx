@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import {observer} from "mobx-react";
 import appStatusStore from "../store/AppStatusStore.ts";
-import LoadingSpinner from "./LoadingSpinner.tsx";
+import {LoadingSpinner} from "./LoadingSpinner.tsx";
 
 interface AppLayoutProps {
   children: React.ReactNode

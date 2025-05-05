@@ -6,51 +6,135 @@ import {useNavigate} from "react-router-dom";
 import {Button, DatePicker, Flex, Form, Input} from "antd";
 import {useForm} from "antd/es/form/Form";
 import dayjs from "dayjs";
-import {sendVerificationCodeMail, signup, verifyCode} from "../api.ts";
+import {sendVerificationCodeMail, signup, verifyCode} from "../api/user.ts";
+import appStatusStore from "../store/AppStatusStore.ts";
+import {CommonConfirmModal} from "../component/CommonConfirmModal.tsx";
+import {ButtonAction} from "../type.ts";
+
+type Modal = 'signup' | 'emailSend' | 'verification'
 
 const SignupForm = () => {
-    const [timer, setTimer] = useState<number>(0);
-    const [verified, setVerified] = useState<boolean>(false)
     const navigate = useNavigate();
     const [form] = useForm()
+    const onCloseModal = () => {
+        setModalOpen(false)
+        setModalFlag(undefined)
+    }
+    const navigateToLoginOnCloseModal = () => {
+        navigate('/login', {state: {email: form.getFieldValue('email')}})
+    }
+    const [timer, setTimer] = useState<number>(0);
+    const [verified, setVerified] = useState<boolean>(false)
+    const [modalOpen, setModalOpen] = useState<boolean>(false)
+    const [modalFlag, setModalFlag] = useState<Modal | 'default'>()
+    const [confirmMessage, setConfirmMessage] = useState<string>('')
     const email: string = Form.useWatch('email', form)
     const verificationCode: string = Form.useWatch('verificationCode', form)
-    const sendAuthMail = async () => {
-        await sendVerificationCodeMail(email)
-        setTimer(180);
-        const timerInterval = setInterval(() => {
-            setTimer((prev) => {
-                if (prev > 0) {
-                    return prev - 1;
-                } else {
-                    clearInterval(timerInterval)
-                    return 0
-                }
-            })
-        }, 1000);
-    }
 
-    const onClickVerificationButton = async () => {
-        try {
-            await verifyCode({email, verificationCode})
-            setVerified(true)
-        } catch(e) {
-            alert(e)
+    const buttonSettings: Record<Modal, Record<ButtonAction, (values?: any) => void>> = {
+        emailSend: {
+            click: async () => {
+                appStatusStore.callApi()
+                try {
+                    await sendVerificationCodeMail(email)
+                    appStatusStore.completeApi()
+                    setTimer(180);
+                    const timerInterval = setInterval(() => {
+                        setTimer((prev) => {
+                            if (prev > 0) {
+                                return prev - 1;
+                            } else {
+                                clearInterval(timerInterval)
+                                return 0
+                            }
+                        })
+                    }, 1000);
+                } catch (_) {
+                    appStatusStore.completeApi()
+                    setModalFlag('default')
+                    setConfirmMessage('인증메일 전송에 실패했습니다\n관리자에게 문의하세요')
+                    setModalOpen(true)
+                }
+            },
+            confirm: onCloseModal,
+            cancel: onCloseModal
+        },
+        verification: {
+            click: async () => {
+                setModalFlag('verification')
+                appStatusStore.callApi()
+                try {
+                    await verifyCode({email, verificationCode})
+                    appStatusStore.completeApi()
+                    setTimer(0)
+                    setConfirmMessage('인증에 성공했습니다\n해당 메일의 인증정보는 영구 유지됩니다')
+                    setModalFlag('verification')
+                    setModalOpen(true)
+                    setVerified(true)
+                } catch (_) {
+                    appStatusStore.completeApi()
+                    setModalFlag('default')
+                    setConfirmMessage('인증에 실패했습니다\n관리자에게 문의해주세요')
+                    setModalOpen(true)
+                }
+            },
+            confirm: onCloseModal,
+            cancel: onCloseModal
+        },
+        signup: {
+            click: async (values) => {
+                if (!verified) {
+                    setModalFlag('default')
+                    setConfirmMessage('인증 이후 회원가입을 진행해주세요')
+                    setModalOpen(true)
+                    return
+                }
+                const birthDate: string = dayjs(values.birthDate).format("YYYY-MM-DD");
+                appStatusStore.callApi()
+                try {
+                    await signup({...values, birthDate})
+                    appStatusStore.completeApi()
+                    setModalFlag('signup')
+                    setConfirmMessage('회원가입이 완료되었습니다\n로그인 페이지로 이동합니다')
+                    setModalOpen(true)
+                } catch (_) {
+                    appStatusStore.completeApi()
+                    setModalFlag('default')
+                    setConfirmMessage('회원가입에 실패했습니다\n관리자에게 문의해주세요')
+                    setModalOpen(true)
+                }
+            },
+            confirm: () => {
+                navigateToLoginOnCloseModal()
+            },
+            cancel: onCloseModal
         }
     }
 
-    const onClickSignup = async (values: any) => {
-        const birthDate: string = dayjs(values.birthDate).format("YYYY-MM-DD");
-        await signup({...values, birthDate})
-        alert('회원가입이 완료되었습니다')
-        navigate('/login')
+    const renderModal = () => {
+        switch (modalFlag) {
+            case 'emailSend':
+                return <CommonConfirmModal message={confirmMessage} onClickConfirm={buttonSettings.emailSend.confirm}/>
+            case 'verification':
+                return <CommonConfirmModal message={confirmMessage} onClickConfirm={buttonSettings.verification.confirm} />
+            case 'signup':
+                return <CommonConfirmModal message={confirmMessage} onClickConfirm={buttonSettings.signup.confirm} />
+            case 'default':
+                return <CommonConfirmModal message={confirmMessage} onClickConfirm={onCloseModal} />
+        }
     }
     return (
-        <ContentBox title={'회원가입'} flexDirection={'column'}>
+        <ContentBox
+            title={'회원가입'}
+            flexDirection={'column'}
+            modalOpen={modalOpen}
+            modal={renderModal()}
+            onCloseModal={onCloseModal}
+        >
             <Form
                 form={form}
                 layout="vertical"
-                onFinish={onClickSignup}
+                onFinish={buttonSettings.signup.click}
             >
                 <Form.Item
                     label="이름"
@@ -65,9 +149,9 @@ const SignupForm = () => {
                     rules={[{required: true, message: "이메일을 입력해주세요"}]}
                 >
                     <Flex gap='small'>
-                        <Input disabled={verified || timer > 0} />
+                        <Input disabled={verified || timer > 0}/>
                         <Button disabled={timer > 0 || !email || verified} type='primary'
-                                onClick={sendAuthMail}>{timer > 0 ? timer : '인증번호 발송'}</Button>
+                                onClick={buttonSettings.emailSend.click}>{timer > 0 ? timer : '인증번호 발송'}</Button>
                     </Flex>
                 </Form.Item>
                 <Form.Item
@@ -77,7 +161,7 @@ const SignupForm = () => {
                     <Flex gap='small'>
                         <Input/>
                         <Button disabled={timer == 0} type='primary'
-                                onClick={onClickVerificationButton}>인증하기</Button>
+                                onClick={buttonSettings.verification.click}>인증하기</Button>
                     </Flex>
                 </Form.Item>
                 <Form.Item
@@ -110,7 +194,7 @@ const SignupForm = () => {
                     name="phone"
                     rules={[{required: true, message: "연락처를 입력해주세요"}]}
                 >
-                    <Input/>
+                    <Input placeholder={'000-0000-0000'}/>
                 </Form.Item>
                 <Form.Item
                     label="생년월일"

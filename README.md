@@ -1,5 +1,28 @@
 # React + TypeScript + Vite
 
+- vite.config.ts 확인할 시 볼 수 있겠지만, api 호출 시 /api -> 서버 주소로 호출되도록 프록시 설정을 했습니다.
+- src/api/config.ts를 통해 일괄 prefix 적용하도록 설정하여 필요 시 수정 바랍니다.
+```js
+import axios from "axios";
+import {navigateExternally} from "../navi.ts";
+const api = axios.create({
+    baseURL: '/api',
+    withCredentials: true,
+});
+
+api.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response?.status === 401) {
+            navigateExternally('/login')
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default api;
+```
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

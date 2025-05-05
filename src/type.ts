@@ -1,3 +1,5 @@
+import type {ButtonType} from "antd/es/button/buttonHelpers";
+
 export interface ExpenseRequest {
     id: string,
     year: number,
@@ -19,9 +21,12 @@ export interface ExpenseStatus {
 }
 
 export interface User {
-    name: string,
     email: string,
+    name: string,
     role: string,
+    phone: string,
+    birthDate: string,
+    createdDate: string
 }
 
 export interface Expense {
@@ -32,6 +37,7 @@ export interface Expense {
     note?: string,
     image?: File[],
 }
+
 export interface ExpenseResponse {
     amount: number,
     expenseDate: string,
@@ -58,19 +64,63 @@ export interface PageResponse<T> {
 
 export interface Pageable {
     totalItems?: number,
-    currentPage?: number,
+    currentPage: number,
     pageSize?: number,
-    onChangePage?: (page: number, pageSize: number) => void,
 }
 
 export interface SubjectCreateRequest {
     name: string,
 }
 
-export const getPageable = (response: PageResponse<any>) => {
-    return {
-        totalItems: response.totalElements,
-        currentPage: response.pageNumber + 1,
-        pageSize: response.pageSize,
-    }
+export interface VerifyCodeRequest {
+    email: string,
+    verificationCode: string,
+}
+
+export interface LoginRequest {
+    email: string,
+    password: string
+}
+
+export interface SignupRequest {
+    email: string,
+    name: string,
+    password: string,
+    phone: string,
+    birthDate: string,
+}
+
+export interface ExpenseRequestCreateRequest {
+    id?: string,
+    expenseList: Expense[],
+    requestDate: string,
+}
+
+export type ButtonAction = 'click' | 'confirm' | 'cancel'
+
+export interface ButtonSetting {
+    disabled: boolean,
+    type: ButtonType,
+    onClick: () => void,
+    content: string,
+}
+
+export interface MeUpdateRequest {
+    name: string,
+    phone: string,
+    birthDate: string
+}
+
+export interface UserUpdateRequest extends MeUpdateRequest {
+    email: string
+}
+
+export interface PasswordUpdateRequest {
+    currentPassword: string,
+    newPassword: string,
+}
+
+export interface PasswordUpdateByAdminRequest {
+    email: string,
+    password: string,
 }

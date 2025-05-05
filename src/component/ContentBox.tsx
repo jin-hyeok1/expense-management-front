@@ -83,6 +83,7 @@ const Title = styled.div`
     margin-bottom: 10px;
     font-size: 32px;
     width: calc(100% - 2px);
+    user-select: none;
 `
 
 export default ContentBox

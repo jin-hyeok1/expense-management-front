@@ -13,7 +13,7 @@ import FontIcon from "./button/FontIcon.tsx";
 import {faArrowRightFromBracket, faBars} from "@fortawesome/free-solid-svg-icons";
 import {MenuList} from "./MenuList.tsx";
 import {useNavigate} from "react-router-dom";
-import {logout} from "../api.ts";
+import {logout} from "../api/user.ts";
 
 interface DefaultFrameProps {
     children: React.ReactNode,

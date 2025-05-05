@@ -1,23 +1,48 @@
 import AppLayout from "../component/AppLayout.tsx";
 import MultiDisplay from "../component/MultiDisplay.tsx";
 import ContentBox from "../component/ContentBox.tsx";
-import {useNavigate} from "react-router-dom";
-import {login} from "../api.ts";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useForm} from "antd/es/form/Form";
 import {Button, Flex, Form, Input} from "antd";
+import {login} from "../api/user.ts";
+import appStatusStore from "../store/AppStatusStore.ts";
+import {useEffect, useState} from "react";
+import {CommonConfirmModal} from "../component/CommonConfirmModal.tsx";
 
 const LoginForm = () => {
     const navigate = useNavigate()
+    const [modalOpen, setModalOpen] = useState<boolean>(false)
     const [form] = useForm()
-
+    const state: Record<'email', string | undefined> = useLocation().state
     const onClickLogin = async (values: any) => {
-        const response = await login(values);
-        if (response.request?.status === 200) {
+        appStatusStore.callApi()
+        try {
+            await login(values);
+            appStatusStore.completeApi()
             navigate('/expenses')
+        } catch (_) {
+            appStatusStore.completeApi()
+            setModalOpen(true)
         }
     }
+
+    const onClickModalClose = () => {
+        setModalOpen(false)
+    }
+    useEffect(() => {
+        if (state) {
+            form.setFieldValue('email', state?.email)
+        }
+    }, [form, state]);
     return (
-        <ContentBox title={'로그인'} flexDirection={'column'}>
+        <ContentBox title={'로그인'}
+                    flexDirection={'column'}
+                    modalOpen={modalOpen}
+                    modal={<CommonConfirmModal
+                        message={'로그인에 실패했습니다\n관리자에게 문의하세요'}
+                        onClickConfirm={onClickModalClose}/>}
+                    onCloseModal={onClickModalClose}
+        >
             <Form form={form} layout='vertical' onFinish={onClickLogin}>
                 <Form.Item
                     label={'email'}

@@ -1,14 +1,19 @@
-import { Navigate, Outlet } from "react-router-dom";
-import {useUser} from "./UserContext.tsx";
+import {Navigate} from "react-router-dom";
+import {useUser} from "../context/UserContext.tsx";
+import {ReactNode} from "react";
 
-const RequireAuth = () => {
+interface RequireAuthProps {
+    children: ReactNode;
+}
+
+const RequireAuth = ({ children }: RequireAuthProps) => {
     const user = useUser();
 
     if (!user) {
         return <Navigate to="/login" replace />;
     }
 
-    return <Outlet />;
+    return <>{children}</>;
 };
 
 export default RequireAuth;

@@ -15,7 +15,7 @@ export const SubjectAddForm: React.FC<SubjectAddProp> = ({subject, onFinish, onC
         if (subject) {
             form.setFieldValue('name', subject.name);
         }
-    }, []);
+    }, [form, subject]);
 
     return (
         <Form
@@ -27,7 +27,7 @@ export const SubjectAddForm: React.FC<SubjectAddProp> = ({subject, onFinish, onC
             <Form.Item
                 label={'이름'}
                 name={'name'}
-                rules={[{required: true, message: "지출월일을 입력해주세요"}]}
+                rules={[{required: true, message: "이름을 입력해주세요"}]}
             >
                 <Input />
             </Form.Item>
