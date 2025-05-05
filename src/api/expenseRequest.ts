@@ -86,15 +86,11 @@ export const getExpenseRequestsForMe = async (pageNum: number, pageSize: number 
 }
 
 export const downloadReportInvoice = async (id: string) => {
-    try {
-        const response = await api.get(`/v1/expense/invoice-report/${id}`, {
-            responseType: 'blob'
-        })
+    const response = await api.get(`/v1/expense/invoice-report/${id}`, {
+        responseType: 'blob'
+    })
 
-        downloadFileFromResponse(response)
-    } catch (error) {
-        console.error('다운로드 실패:', error);
-    }
+    downloadFileFromResponse(response)
 }
 
 export const deleteExpense = async (id: string) => {
@@ -102,15 +98,11 @@ export const deleteExpense = async (id: string) => {
 }
 
 export const downloadInvoice = async (id: string) => {
-    try {
-        const response = await api.get(`/v1/expense/invoice/${id}`, {
-            responseType: 'blob',
-        });
+    const response = await api.get(`/v1/expense/invoice/${id}`, {
+        responseType: 'blob',
+    });
 
-        downloadFileFromResponse(response)
-    } catch (error) {
-        console.error('다운로드 실패:', error);
-    }
+    downloadFileFromResponse(response)
 };
 
 const downloadFileFromResponse = (response: AxiosResponse<any, any>) => {

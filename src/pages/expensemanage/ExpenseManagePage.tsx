@@ -9,7 +9,7 @@ import {CommonModal} from "../../component/CommonModal.tsx";
 import dayjs from "dayjs";
 import {
     approveExpenseRequest,
-    cancelApproveOfExpenseRequest, deleteExpenseRequestByAdmin,
+    cancelApproveOfExpenseRequest, deleteExpenseRequestByAdmin, downloadExpenseImages,
     getAllExpense,
     rejectExpenseRequest,
     reviewExpenseRequest
@@ -18,7 +18,7 @@ import {downloadInvoice, downloadReportInvoice} from "../../api/expenseRequest.t
 import {CommonConfirmModal} from "../../component/CommonConfirmModal.tsx";
 import appStatusStore from "../../store/AppStatusStore.ts";
 
-type Modal = 'review' | 'approve' | 'reject' | 'cancelApprove' | 'delete' | 'report' | 'reportSubmit'
+type Modal = 'review' | 'approve' | 'reject' | 'cancelApprove' | 'delete' | 'report' | 'reportSubmit' | 'receipt'
 
 export const ExpenseManagePage: React.FC = () => {
     const [modalOpen, setModalOpen] = useState<boolean>()
@@ -232,6 +232,30 @@ export const ExpenseManagePage: React.FC = () => {
                 }
             },
             cancel: onClickModalClose
+        },
+        receipt: {
+            click: () => {
+                setModalFlag('receipt')
+                setModalOpen(true)
+            },
+            confirm: async () => {
+                if (!selected) {
+                    setConfirmMessage('항목 선택이 필요합니다')
+                    openConfirmModal()
+                    return
+                }
+                onClickModalClose()
+                appStatusStore.callApi()
+                try {
+                    await downloadExpenseImages(selected.id)
+                    appStatusStore.completeApi()
+                } catch (_) {
+                    appStatusStore.completeApi()
+                    setConfirmMessage('이미지 다운로드에 실패했습니다\n관리자에게 문의하세요')
+                    openConfirmModal()
+                }
+            },
+            cancel: onClickModalClose
         }
     }
 
@@ -271,6 +295,11 @@ export const ExpenseManagePage: React.FC = () => {
             type: 'primary',
             onClick: buttonFunctions.reportSubmit.click,
             content: '보고서(제출용)'
+        }, {
+            disabled: !selected,
+            type: 'primary',
+            onClick: buttonFunctions.receipt.click,
+            content: '영수증'
         }
     ]
 
@@ -311,8 +340,13 @@ export const ExpenseManagePage: React.FC = () => {
                     message={'경비 요청을 보고서(제출용)을 다운하시겠습니까?'}
                     onClickConfirm={buttonFunctions.reportSubmit.confirm}
                     onClickCancel={buttonFunctions.reportSubmit.cancel}/>
+            case 'receipt' :
+                return <CommonModal
+                    message={'경비 영수증 이미지를 다운하시겠습니까?'}
+                    onClickConfirm={buttonFunctions.receipt.confirm}
+                    onClickCancel={buttonFunctions.reportSubmit.cancel}/>
             case 'default' :
-                return <CommonConfirmModal message={confirmMessage} onClickConfirm={onClickModalClose} />
+                return <CommonConfirmModal message={confirmMessage} onClickConfirm={onClickModalClose}/>
             default :
                 return null
         }
